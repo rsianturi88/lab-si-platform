@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth %}
+<div style="max-width:460px;margin:64px auto" class="card elevated">
+  <div style="text-align:center;margin-bottom:18px">
+    <img class="mini-logo" src="{% static 'img/logo_labsi.jpg' %}" alt="Logo Lab SI">
+    <h1>Login Lab SI ERIMP</h1>
+    <p class="muted">Enterprise Research and Innovation Management Platform Laboratorium Sistem Informasi.</p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" style="width:100%">Login</button>
+  </form>
+
+  <p class="muted">Default setelah bootstrap: admin / ChangeMe123!</p>
+</div>
+{% endblock %}

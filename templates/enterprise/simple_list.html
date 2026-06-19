@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ title }}</h1>
+    <p class="muted">Kelola data operasional, mutu, layanan, dan tata kelola laboratorium melalui antarmuka CRUD yang siap audit.</p>
+  </div>
+  {% if user.can_manage_enterprise %}<a class="btn" href="{% url create_url %}">+ Tambah Data</a>{% endif %}
+</div>
+<div class="card">
+  <form method="get" class="search-row">
+    <div>
+      <label>Cari Data</label>
+      <input name="q" value="{{ q }}" placeholder="Masukkan kata kunci, nama, status, periode, atau PIC">
+    </div>
+    <div class="search-actions">
+      <button class="btn">Cari</button>
+      <a class="btn light" href="{% url request.resolver_match.url_name %}">Reset</a>
+    </div>
+  </form>
+</div>
+<div class="card table-card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>{% if rows %}{% for label, val in rows.0.cells %}<th>{{ label }}</th>{% endfor %}{% else %}<th>Data</th>{% endif %}<th>Aksi</th></tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          {% for label, val in row.cells %}<td>{{ val|default:'-' }}</td>{% endfor %}
+          <td class="actions actions-crud">
+            <a href="{% url detail_url row.obj.pk %}" title="Lihat detail">Detail</a>
+            {% if user.can_manage_enterprise %}
+            <a href="{% url edit_url row.obj.pk %}" title="Edit data">Edit</a>
+            <a class="danger-link" href="{% url delete_url row.obj.pk %}" title="Hapus data">Hapus</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="99" class="empty">Data belum tersedia atau tidak sesuai filter.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if page.has_other_pages %}
+  <div class="pagination">
+    {% if page.has_previous %}<a class="btn light" href="?q={{ q }}&page={{ page.previous_page_number }}">Sebelumnya</a>{% endif %}
+    <span class="muted">Halaman {{ page.number }} dari {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn light" href="?q={{ q }}&page={{ page.next_page_number }}">Berikutnya</a>{% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

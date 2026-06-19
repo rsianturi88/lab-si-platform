@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero-card card elevated">
+  <div>
+    <h1 class="page-title">Enterprise Research & Innovation Dashboard</h1>
+    <p class="muted">Dashboard terpadu untuk membantu Kepala Laboratorium mengoordinasikan PPEPP, RKAT, praktikum, riset, inovasi, pengabdian, layanan profesional, aset, kerja sama, dan laporan kinerja.</p>
+  </div>
+</div>
+<form method="get" class="card search-row"><div><label>Tahun KPI</label><input name="year" value="{{ year }}" style="max-width:180px"></div><div class="search-actions"><button class="btn">Tampilkan</button></div></form>
+<div class="grid">{% for label,val in stats.items %}<div class="card"><div class="muted">{{ label }}</div><div class="stat">{{ val }}</div></div>{% endfor %}</div>
+<div class="card"><h2>Modul Kendali Kepala Laboratorium</h2><div class="quick-module-grid">
+<a class="quick-module" href="{% url 'quality_cycle_list' %}"><strong>Siklus PPEPP</strong><span>Penetapan, pelaksanaan, evaluasi, pengendalian, dan peningkatan mutu.</span></a>
+<a class="quick-module" href="{% url 'workplan_list' %}"><strong>RKAT</strong><span>Rencana kerja, anggaran, realisasi, dan persetujuan.</span></a>
+<a class="quick-module" href="{% url 'sop_list' %}"><strong>SOP</strong><span>Dokumen baku mutu dan tata laksana laboratorium.</span></a>
+<a class="quick-module" href="{% url 'practicum_list' %}"><strong>Praktikum</strong><span>Koordinasi mata kuliah, modul, asisten, dan evaluasi implementasi.</span></a>
+<a class="quick-module" href="{% url 'professional_service_list' %}"><strong>Layanan Profesional</strong><span>Pelatihan, konsultasi, dan pengembangan sistem gratis/berbayar.</span></a>
+<a class="quick-module" href="{% url 'performance_report_list' %}"><strong>Laporan Kinerja</strong><span>Pelaporan periodik kepada pimpinan dan Dekan.</span></a>
+</div></div>
+<div class="card table-card"><div class="table-wrap"><table><tr><th>Kategori</th><th>Indikator</th><th>Target</th><th>Realisasi</th><th>Capaian</th></tr>{% for k in kpis %}<tr><td>{{ k.get_category_display }}</td><td>{{ k.name }}</td><td>{{ k.target_value }} {{ k.unit }}</td><td>{{ k.actual_value }} {{ k.unit }}</td><td><span class="badge {% if k.achievement_percent >= 100 %}ok{% elif k.achievement_percent < 70 %}danger{% else %}warn{% endif %}">{{ k.achievement_percent }}%</span></td></tr>{% empty %}<tr><td colspan="5">Belum ada KPI.</td></tr>{% endfor %}</table></div></div>
+<div class="grid-2"><div class="card"><h2>Penelitian Terbaru</h2><table><tr><th>Judul</th><th>Status</th><th>Ketua</th></tr>{% for r in latest_research %}<tr><td><a href="{% url 'research_detail' r.pk %}">{{ r.title }}</a></td><td>{{ r.get_status_display }}</td><td>{{ r.leader|default:'-' }}</td></tr>{% empty %}<tr><td colspan="3">Belum ada penelitian.</td></tr>{% endfor %}</table></div><div class="card"><h2>Publikasi Terbaru</h2><table><tr><th>Judul</th><th>Indeks</th><th>Tahun</th></tr>{% for p in latest_publications %}<tr><td>{{ p.title }}</td><td>{{ p.get_indexing_display }}</td><td>{{ p.year|default:'-' }}</td></tr>{% empty %}<tr><td colspan="3">Belum ada publikasi.</td></tr>{% endfor %}</table></div></div>
+{% endblock %}

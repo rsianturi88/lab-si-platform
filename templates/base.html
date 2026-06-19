@@ -1,0 +1,84 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lab SI ERIMP</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+{% if user.is_authenticated %}
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
+<div class="layout">
+  <aside class="side" id="sidebar">
+    <div class="brand">
+      <img class="brand-logo" src="{% static 'img/logo_labsi.jpg' %}" alt="Logo Lab Sistem Informasi" width="42" height="42">
+      <span><strong>Lab SI ERIMP</strong></span>
+    </div>
+    <div class="nav-section">Utama</div>
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'member_list' %}">Keanggotaan</a>
+    {% if user.can_manage_members %}<a href="{% url 'user_list' %}">Manajemen User</a><a href="{% url 'member_create' %}">Tambah User/Anggota</a>{% endif %}
+    <a href="{% url 'group_list' %}">Kelompok Riset</a>
+    <a href="{% url 'activity_list' %}">Kegiatan</a>
+
+    <div class="nav-section">Riset & Inovasi</div>
+    <a href="{% url 'enterprise_dashboard' %}">Enterprise Dashboard</a>
+    <a href="{% url 'organization_list' %}">Organisasi</a>
+    <a href="{% url 'research_list' %}">Penelitian</a>
+    <a href="{% url 'service_list' %}">Pengabdian</a>
+    <a href="{% url 'publication_list' %}">Publikasi</a>
+    <a href="{% url 'roadmap_list' %}">Roadmap</a>
+    <a href="{% url 'dataset_list' %}">Dataset</a>
+    <a href="{% url 'repository_list' %}">Source Code</a>
+
+    <div class="nav-section">Layanan & Kerja Sama</div>
+    <a href="{% url 'professional_service_list' %}">Layanan Profesional</a>
+    <a href="{% url 'partner_list' %}">Mitra CRM</a>
+    <a href="{% url 'agreement_list' %}">MoU/MoA/IA</a>
+    <a href="{% url 'digital_channel_list' %}">Kanal Digital</a>
+
+    <div class="nav-section">Praktikum & Talenta</div>
+    <a href="{% url 'practicum_list' %}">Praktikum</a>
+    <a href="{% url 'curriculum_support_list' %}">Dukungan Kurikulum</a>
+    <a href="{% url 'talent_program_list' %}">Asisten & Kompetisi</a>
+
+    <div class="nav-section">Mutu & Tata Kelola</div>
+    <a href="{% url 'quality_cycle_list' %}">Siklus PPEPP</a>
+    <a href="{% url 'workplan_list' %}">RKAT</a>
+    <a href="{% url 'sop_list' %}">SOP</a>
+    <a href="{% url 'satisfaction_survey_list' %}">Kepuasan Pengguna</a>
+    <a href="{% url 'performance_report_list' %}">Laporan Kinerja</a>
+    <a href="{% url 'head_approval_list' %}">Otorisasi Kepala Lab</a>
+    <a href="{% url 'asset_list' %}">Aset</a>
+    <a href="{% url 'booking_list' %}">Booking Ruang</a>
+    <a href="{% url 'kpi_list' %}">KPI</a>
+
+    <div class="nav-section">Intelligence</div>
+    <a href="{% url 'knowledge_graph' %}">Knowledge Graph</a>
+    <a href="{% url 'rag_chatbot' %}">Chatbot RAG</a>
+
+    <div class="nav-section">Akun & Audit</div>
+    <a href="{% url 'profile' %}">Profil Saya</a>
+    {% if user.can_audit %}<a href="{% url 'audit_logs' %}">Audit Log</a>{% endif %}
+    <a href="/admin/">Admin Django</a>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn secondary logout-btn">Logout</button></form>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button class="mobile-toggle" onclick="toggleSidebar(true)" aria-label="Buka menu">☰ Menu</button>
+      <div class="top-user"><strong>{{ user.get_full_name|default:user.username }}</strong><div class="muted">{{ user.get_role_display }}</div></div>
+    </div>
+    {% if messages %}<ul class="messages">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<script>
+function toggleSidebar(open){const s=document.getElementById('sidebar');const b=document.getElementById('sidebarBackdrop');if(!s||!b)return;s.classList.toggle('open',open);b.classList.toggle('show',open)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')toggleSidebar(false)});
+document.querySelectorAll('.side a').forEach(a=>{try{if(location.pathname===a.pathname || (a.pathname !== '/' && location.pathname.startsWith(a.pathname))){a.classList.add('active')}}catch(e){}});
+</script>
+{% else %}{% block auth %}{% endblock %}{% endif %}
+</body>
+</html>
